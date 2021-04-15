@@ -40,12 +40,16 @@
    
   return {
      init: function() {
-        request( 'http://127.0.0.1:5501/challenge-29/company.json' );
+        request( 'http://127.0.0.1:5501/auto-shopping/company.json' );
        
         var $btnInsert = $( '[data-js="btnInsert"]' );
         $btnInsert.on( 'click', insert );
 
+        var $tbody = $( '[data-js="body"]' ).get( 0 );
+        $tbody.addEventListener( 'click', del ,false );
+
         list();
+
       },
   }  
   
@@ -96,8 +100,7 @@
       var cars = [];
       
       if ( localStorage.getItem( 'cars' ) ) {
-        cars = JSON.parse( localStorage.getItem( 'cars' ) )
-
+        cars = parse();
       }
 
       cars.push({
@@ -111,20 +114,34 @@
       clear();
   }
 
+  function parse() {
+    var cars;
+
+    try {
+      cars =  JSON.parse( localStorage.getItem( 'cars' ) );
+    }
+    catch( e ) {
+      console.warn( 'Lista de carros vazia' );
+      cars = [];
+    }
+
+    return cars;
+  }
+
   function clear() {
-    $( '[data-js="img"]' ).value = '';
-    $( '[data-js="brand"]' ).value = '';
-    $( '[data-js="model"]' ).value = '';
-    $( '[data-js="year"]' ).value = '';
-    $( '[data-js="plate"]' ).value = '';
-    $( '[data-js="color"]' ).value = '';
+    $( '[data-js="img"]' ).get( 0 ).value = '';
+    $( '[data-js="brand"]' ).get( 0 ).value = '';
+    $( '[data-js="model"]' ).get( 0 ).value = '';
+    $( '[data-js="year"]' ).get( 0 ).value = '';
+    $( '[data-js="plate"]' ).get( 0 ).value = '';
+    $( '[data-js="color"]' ).get( 0 ).value = '';
   }
 
   function list() {
-      var cars = [];
+      var cars;
 
       if ( localStorage.getItem( 'cars' ) ) {
-          cars =  JSON.parse( localStorage.getItem( 'cars' ) );
+          cars = parse();
       }
       
       var tbody = '';
@@ -136,11 +153,30 @@
                         '<td>' + cars[i].model + '</td>' + 
                         '<td>' + cars[i].year + '</td>' +
                         '<td>' + cars[i].plate + '</td>' +
-                        '<td>' + cars[i].color + '</td></tr>';
+                        '<td>' + cars[i].color + '</td>' +
+                        '<td><button data-id="' + i + '">Delete</button></td></tr>';
       }
       
       var $tbody = $( '[data-js="body"]' ).get( 0 );
       $tbody.innerHTML = tbody;
+    }    
+
+  function del( e ) {
+    var target = e.target;
+    var id = target.getAttribute( 'data-id' ) || undefined;
+
+    if ( id !== undefined ) {
+      if ( confirm( 'Deseja remover o registro?' ) ) {
+        if ( localStorage.getItem( 'cars' ) ) {
+          var cars = parse();
+  
+          cars.splice( id, 1 );
+          localStorage.setItem( 'cars', JSON.stringify( cars ) );
+        }
+
+        list();
+      }
+    }
   }
 } )();  
 
