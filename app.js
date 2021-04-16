@@ -45,8 +45,8 @@
         var $btnInsert = $( '[data-js="btnInsert"]' );
         $btnInsert.on( 'click', insert );
 
-        var $tbody = $( '[data-js="body"]' ).get( 0 );
-        $tbody.addEventListener( 'click', del ,false );
+        var $tbody = $( '[data-js="body"]' );
+        $tbody.on( 'click', del );
 
         list();
 
@@ -129,12 +129,12 @@
   }
 
   function clear() {
-    $( '[data-js="img"]' ).get( 0 ).value = '';
-    $( '[data-js="brand"]' ).get( 0 ).value = '';
-    $( '[data-js="model"]' ).get( 0 ).value = '';
-    $( '[data-js="year"]' ).get( 0 ).value = '';
-    $( '[data-js="plate"]' ).get( 0 ).value = '';
-    $( '[data-js="color"]' ).get( 0 ).value = '';
+    $( '[data-js="img"]' ).get().value = '';
+    $( '[data-js="brand"]' ).get().value = '';
+    $( '[data-js="model"]' ).get().value = '';
+    $( '[data-js="year"]' ).get().value = '';
+    $( '[data-js="plate"]' ).get().value = '';
+    $( '[data-js="color"]' ).get().value = '';
   }
 
   function list() {
