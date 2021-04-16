@@ -148,13 +148,13 @@
       var length = cars.length;
       
       for ( var i = 0; i < length; i++ ) {
-          tbody += '<tr><td>' + cars[i].img + '</td>' +
+          tbody += '<tr><td><img src="' + cars[i].img + '" /></td>' +
                         '<td>' + cars[i].brand + '</td>' +
                         '<td>' + cars[i].model + '</td>' + 
                         '<td>' + cars[i].year + '</td>' +
                         '<td>' + cars[i].plate + '</td>' +
                         '<td>' + cars[i].color + '</td>' +
-                        '<td><button data-id="' + i + '">Delete</button></td></tr>';
+                        '<td><button class="btn-delete" data-id="' + i + '">Remover</button></td></tr>';
       }
       
       var $tbody = $( '[data-js="body"]' ).get( 0 );
