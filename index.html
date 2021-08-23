@@ -23,13 +23,22 @@
             text-shadow: 0px 1px 1px #222;
         }
 
-        form, table {
-            width: 600px;
+        img {
+            max-width: 100%;
+        }
+
+        form, .table {
+            width: 100%;
+            max-width: 600px;
             margin: 0 auto;
         }
 
         table {
-            width: 800px;
+            width: 600px;
+        }
+
+        .table {
+            overflow-x: auto;
         }
 
         label {
@@ -37,7 +46,7 @@
         }        
 
         thead {
-            background-color: #ddd;
+            background-color: #efefef;
         }
 
         tr:nth-child(even) {
@@ -46,6 +55,8 @@
 
         th, td {
             padding: 5px;
+            max-width: 120px;
+            text-align: center;
         }
 
         div {
@@ -57,7 +68,7 @@
         }
 
         input {
-            width: 98%;
+            width: 96%;
             padding: 10px;
         }
 
@@ -69,6 +80,7 @@
             text-shadow: 0px 1px 1px #222;
             font-size: 18px;
             color: #fff;
+            cursor: pointer;
         }
 
         .btn-delete, .btn-edit {
@@ -97,13 +109,8 @@
         </div>
 
         <div>
-            <label for="brand">Marca:</label>
-            <input type="text" id="brand" data-js="brand">
-        </div>
-
-        <div>
-            <label for="model">Modelo:</label>
-            <input type="text" id="model" data-js="model">
+            <label for="brandModel">Marca/Modelo:</label>
+            <input type="text" id="brandModel" data-js="brandModel">
         </div>
 
         <div>
@@ -118,27 +125,27 @@
 
         <div>
             <label for="color">Cor:</label>
-            <input type="color" name="" id="color" data-js="color">
+            <input type="text" name="" id="color" data-js="color">
         </div>
 
         <button data-js="btnInsert">Cadastrar</button>
     </form>
 
-    <table>
-        <thead>
-            <tr>
-                <th>Imagem</th>
-                <th>Marca</th>
-                <th>Modelo</th>
-                <th>Ano</th>
-                <th>Placa</th>
-                <th>Cor</th>
-                <th></th>
-            </tr>
-        </thead>
-
-        <tbody data-js="body"></tbody>   
-    </table>
+    <div class="table">
+        <table>
+            <thead>
+                <tr>
+                    <th>Imagem</th>
+                    <th>Marca/Modelo</th>
+                    <th>Ano</th>
+                    <th>Placa</th>
+                    <th>Cor</th>
+                </tr>
+            </thead>
+    
+            <tbody data-js="body"></tbody>   
+        </table>
+    </div>
 
     <script src="DOM.js"></script>
     <script src="app.js"></script>
