@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Auto Shopping</title>
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        header {
+            padding: 10px;
+            margin-bottom: 20px;
+            background-image: linear-gradient( rgb(64, 102, 84), rgb(114, 156, 136));
+            color: #fff;
+            text-align: center;
+            box-shadow: 0px 1px 2px #222;
+        }
+
+        h1 {
+            text-shadow: 0px 1px 1px #222;
+        }
+
+        img {
+            max-width: 100%;
+        }
+
+        form, .table {
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        table {
+            width: 600px;
+        }
+
+        .table {
+            overflow-x: auto;
+        }
+
+        label {
+            margin: 5px 0px;
+        }        
+
+        thead {
+            background-color: #efefef;
+        }
+
+        tr:nth-child(even) {
+            background-color: #eee;
+        }
+
+        th, td {
+            padding: 5px;
+            max-width: 120px;
+            text-align: center;
+        }
+
+        div {
+            margin: 10px;
+        }
+
+        label {
+            display: inline-block;
+        }
+
+        input {
+            width: 96%;
+            padding: 10px;
+        }
+
+        button {
+            margin: 20px 50% 40px;
+            transform: translateX(-50%);
+            padding: 10px 20px;
+            background-image: linear-gradient( rgb(64, 102, 84), rgb(114, 156, 136));
+            text-shadow: 0px 1px 1px #222;
+            font-size: 18px;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        .btn-delete, .btn-edit {
+            margin: 0;
+            padding: 10px;
+            background-image: linear-gradient( rgb(250, 0, 0), rgb(156, 8, 8));
+            border: none;
+            border-radius: 5px;
+            transform: translateX(0);
+        }
+
+    </style>
+</head>
+<body>
+    <header>
+        <h1>
+            <span data-js="company-name"></span> - 
+            <span data-js="company-phone"></span> 
+        </h1>
+    </header>
+
+    <form action="/" method="POST">
+        <div>
+            <label for="img">Imagem do carro:</label>
+            <input type="url" name="" id="img" data-js="img">
+        </div>
+
+        <div>
+            <label for="brandModel">Marca/Modelo:</label>
+            <input type="text" id="brandModel" data-js="brandModel">
+        </div>
+
+        <div>
+            <label for="year">Ano</label>
+            <input type="number" start="1900" id="year" data-js="year">
+        </div>
+
+        <div>
+            <label for="plate">Placa:</label>
+            <input type="text" name="" id="plate" data-js="plate">
+        </div>
+
+        <div>
+            <label for="color">Cor:</label>
+            <input type="text" name="" id="color" data-js="color">
+        </div>
+
+        <button data-js="btnInsert">Cadastrar</button>
+    </form>
+
+    <div class="table">
+        <table>
+            <thead>
+                <tr>
+                    <th>Imagem</th>
+                    <th>Marca/Modelo</th>
+                    <th>Ano</th>
+                    <th>Placa</th>
+                    <th>Cor</th>
+                </tr>
+            </thead>
+    
+            <tbody data-js="body"></tbody>   
+        </table>
+    </div>
+
+    <script src="DOM.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

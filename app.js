@@ -1,124 +1,90 @@
 (function( $, doc ) {
   'use strict';
 
-  /*
-  Vamos estruturar um pequeno app utilizando módulos.
-  Nosso APP vai ser um cadastro de carros. Vamos fazê-lo por partes.
-  A primeira etapa vai ser o cadastro de veículos, de deverá funcionar da
-  seguinte forma:
-  - No início do arquivo, deverá ter as informações da sua empresa - nome e
-  telefone (já vamos ver como isso vai ser feito)
-  - Ao abrir a tela, ainda não teremos carros cadastrados. Então deverá ter
-  um formulário para cadastro do carro, com os seguintes campos:
-    - Imagem do carro (deverá aceitar uma URL)
-    - Marca / Modelo
-    - Ano
-    - Placa
-    - Cor
-    - e um botão "Cadastrar"
-
-  Logo abaixo do formulário, deverá ter uma tabela que irá mostrar todos os
-  carros cadastrados. Ao clicar no botão de cadastrar, o novo carro deverá
-  aparecer no final da tabela.
-
-  Agora você precisa dar um nome para o seu app. Imagine que ele seja uma
-  empresa que vende carros. Esse nosso app será só um catálogo, por enquanto.
-  Dê um nome para a empresa e um telefone fictício, preechendo essas informações
-  no arquivo company.json que já está criado.
-
-  Essas informações devem ser adicionadas no HTML via Ajax.
-
-  Parte técnica:
-  Separe o nosso módulo de DOM criado nas últimas aulas em
-  um arquivo DOM.js.
-
-  E aqui nesse arquivo, faça a lógica para cadastrar os carros, em um módulo
-  que será nomeado de "app".
-  */
-
- var app = ( function() { 
+ 
+  var app = ( function() { 
    
   return {
      init: function() {
-        request( 'http://127.0.0.1:5501/auto-shopping/company.json' );
+        request( 'http://127.0.0.1:5501/auto-shopping/company.json', function( response) {
+          var $name = $( '[data-js="company-name"]' );
+          var $phone = $( '[data-js="company-phone"]' );
+  
+          response = JSON.parse( response );
+  
+          $name.get().textContent = response.name;
+          $phone.get().textContent = response.phone;
+        }, 'GET' );
        
         var $btnInsert = $( '[data-js="btnInsert"]' );
         $btnInsert.on( 'click', insert );
 
-        var $tbody = $( '[data-js="body"]' );
-        $tbody.on( 'click', del );
-
         list();
-
-      },
-  }  
+      }
+  };  
   
-  function request( url ) {
+  function request( url, callback, method, data ) {
+    if ( typeof callback != 'function') {
+        throw {
+          name: 'ReferenceError',
+          message: 'Second param is not a function'
+        };
+    }
+
     var xhr = new XMLHttpRequest();
     
     if ( xhr ) {
       xhr.addEventListener( 'readystatechange', function() {
-        handleStateChange( xhr );
+        handleStateChange( xhr, callback );
       }, false ); 
       
-      xhr.open( 'GET', url, true );
+      
+      xhr.open( method, url, true );
+      
+      if ( typeof data !== undefined ) {
+        xhr.setRequestHeader("Content-Type", "application/json");
+        xhr.send(JSON.stringify(data));
+
+        return;
+      }
+      
       xhr.send( null );
     }
       
   }
     
-  function handleStateChange( xhr ) {
+  function handleStateChange( xhr, callback ) {
     if ( xhr.readyState === 4 ) {
       if ( xhr.status === 200 || xhr.status === 304 ) {
-        handleResponse( xhr );
+        callback( xhr.response );
       }
     }
   }
     
-  function handleResponse( xhr ) {    
-        var $name = $( '[data-js="company-name"]' );
-        var $phone = $( '[data-js="company-phone"]' );
-
-        var response = xhr.responseText;
-        response = JSON.parse( response );
-
-        $name.get().textContent = response.name;
-        $phone.get().textContent = response.phone;
-  }
-
-
   function insert( e ) {
       e.preventDefault();
     
       var img = $( '[data-js="img"]' ).get().value;
-      var brand = $( '[data-js="brand"]' ).get().value;
-      var model = $( '[data-js="model"]' ).get().value;
+      var brandModel = $( '[data-js="brandModel"]' ).get().value;
       var year = $( '[data-js="year"]' ).get().value;
       var plate = $( '[data-js="plate"]' ).get().value;
       var color = $( '[data-js="color"]' ).get().value;
-      
-      var cars = [];
-      
-      if ( localStorage.getItem( 'cars' ) ) {
-        cars = parse();
-      }
+     
+      request( 'http://localhost:3000/car', function( response ) {
+          console.log( response.status );
 
-      cars.push({
-        img: img, brand: brand, model: model, year: year, plate: plate, color: color
-      });
-
-      localStorage.setItem( 'cars', JSON.stringify( cars ) );
-
-      list();
-      
-      clear();
+          list();
+          
+          clear();
+      }, 'POST', { image: img, brandModel: brandModel, year: year, plate, plate, color: color} );
+     
   }
 
-  function parse() {
+  function parse( response ) {
     var cars;
 
     try {
-      cars =  JSON.parse( localStorage.getItem( 'cars' ) );
+      cars =  JSON.parse( response );
     }
     catch( e ) {
       console.warn( 'Lista de carros vazia' );
@@ -130,8 +96,7 @@
 
   function clear() {
     $( '[data-js="img"]' ).get().value = '';
-    $( '[data-js="brand"]' ).get().value = '';
-    $( '[data-js="model"]' ).get().value = '';
+    $( '[data-js="brandModel"]' ).get().value = '';
     $( '[data-js="year"]' ).get().value = '';
     $( '[data-js="plate"]' ).get().value = '';
     $( '[data-js="color"]' ).get().value = '';
@@ -140,44 +105,24 @@
   function list() {
       var cars;
 
-      if ( localStorage.getItem( 'cars' ) ) {
-          cars = parse();
-      }
-      
-      var tbody = '';
-      var length = cars.length;
-      
-      for ( var i = 0; i < length; i++ ) {
-          tbody += '<tr><td>' + cars[i].img + '</td>' +
-                        '<td>' + cars[i].brand + '</td>' +
-                        '<td>' + cars[i].model + '</td>' + 
-                        '<td>' + cars[i].year + '</td>' +
-                        '<td>' + cars[i].plate + '</td>' +
-                        '<td>' + cars[i].color + '</td>' +
-                        '<td><button data-id="' + i + '">Delete</button></td></tr>';
-      }
-      
-      var $tbody = $( '[data-js="body"]' ).get( 0 );
-      $tbody.innerHTML = tbody;
-    }    
-
-  function del( e ) {
-    var target = e.target;
-    var id = target.getAttribute( 'data-id' ) || undefined;
-
-    if ( id !== undefined ) {
-      if ( confirm( 'Deseja remover o registro?' ) ) {
-        if ( localStorage.getItem( 'cars' ) ) {
-          var cars = parse();
-  
-          cars.splice( id, 1 );
-          localStorage.setItem( 'cars', JSON.stringify( cars ) );
+      request( 'http://localhost:3000/car', function( response) {
+        cars = parse( response );
+        
+        var tbody = '';
+        var length = cars.length;
+        
+        for ( var i = 0; i < length; i++ ) {
+          tbody += '<tr><td><img src="' + cars[i].image + '" /></td>' +
+          '<td>' + cars[i].brandModel + '</td>' +
+          '<td>' + cars[i].year + '</td>' +
+          '<td>' + cars[i].plate + '</td>' +
+          '<td>' + cars[i].color + '</td>';
         }
-
-        list();
-      }
-    }
-  }
+        
+        var $tbody = $( '[data-js="body"]' ).get( 0 );
+        $tbody.innerHTML = tbody;
+      }, 'GET' );
+    }      
 } )();  
 
 app.init();
